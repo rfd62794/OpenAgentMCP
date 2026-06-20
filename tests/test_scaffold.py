@@ -34,12 +34,10 @@ def test_assessor_importable():
     assert Assessor is not None
 
 
-def test_writer_stub_raises():
-    """DirectiveWriter().write({}, "", {}) raises NotImplementedError."""
-    from openagent.writer import DirectiveWriter
-    writer = DirectiveWriter()
-    with pytest.raises(NotImplementedError, match="DirectiveWriter not yet implemented"):
-        writer.write({}, "", {})
+def test_writer_importable():
+    """from openagent.writer import Writer succeeds."""
+    from openagent.writer import Writer
+    assert Writer is not None
 
 
 def test_server_no_fastmcp_raises():
