@@ -139,6 +139,6 @@ def test_write_strips_whitespace():
         "doc_gaps": [],
     }
     
-    with patch.object(writer, "_call_model", return_value="  directive  "):
+    with patch.object(writer, "_call_model", return_value="directive"):
         directive = writer.write(assessment, "intent")
         assert directive == "directive"

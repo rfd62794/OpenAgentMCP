@@ -35,10 +35,10 @@ def test_analyze_exits_0_on_success():
     }
     
     with tempfile.TemporaryDirectory() as tmpdir:
-        with patch("openagent.cli.Scanner") as mock_scanner, \
-             patch("openagent.cli.Assessor") as mock_assessor, \
-             patch("openagent.cli.Writer") as mock_writer, \
-             patch("openagent.cli.StateWriter") as mock_state_writer, \
+        with patch("openagent.scanner.Scanner") as mock_scanner, \
+             patch("openagent.assessor.Assessor") as mock_assessor, \
+             patch("openagent.writer.Writer") as mock_writer, \
+             patch("openagent.state_writer.StateWriter") as mock_state_writer, \
              patch("openagent.cli._read_soul", return_value=""), \
              patch("openagent.cli._read_current_md", return_value={"current_md": {}}):
             
@@ -79,10 +79,10 @@ def test_analyze_prints_directive():
     }
     
     with tempfile.TemporaryDirectory() as tmpdir:
-        with patch("openagent.cli.Scanner") as mock_scanner, \
-             patch("openagent.cli.Assessor") as mock_assessor, \
-             patch("openagent.cli.Writer") as mock_writer, \
-             patch("openagent.cli.StateWriter") as mock_state_writer, \
+        with patch("openagent.scanner.Scanner") as mock_scanner, \
+             patch("openagent.assessor.Assessor") as mock_assessor, \
+             patch("openagent.writer.Writer") as mock_writer, \
+             patch("openagent.state_writer.StateWriter") as mock_state_writer, \
              patch("openagent.cli._read_soul", return_value=""), \
              patch("openagent.cli._read_current_md", return_value={"current_md": {}}):
             
@@ -123,8 +123,8 @@ def test_analyze_exits_1_on_floor_failure():
     }
     
     with tempfile.TemporaryDirectory() as tmpdir:
-        with patch("openagent.cli.Scanner") as mock_scanner, \
-             patch("openagent.cli.Assessor") as mock_assessor, \
+        with patch("openagent.scanner.Scanner") as mock_scanner, \
+             patch("openagent.assessor.Assessor") as mock_assessor, \
              patch("openagent.cli._read_soul", return_value=""), \
              patch("openagent.cli._read_current_md", return_value={"current_md": {}}):
             
@@ -163,10 +163,10 @@ def test_analyze_accepts_path_arg():
     }
     
     with tempfile.TemporaryDirectory() as tmpdir:
-        with patch("openagent.cli.Scanner") as mock_scanner, \
-             patch("openagent.cli.Assessor") as mock_assessor, \
-             patch("openagent.cli.Writer") as mock_writer, \
-             patch("openagent.cli.StateWriter") as mock_state_writer, \
+        with patch("openagent.scanner.Scanner") as mock_scanner, \
+             patch("openagent.assessor.Assessor") as mock_assessor, \
+             patch("openagent.writer.Writer") as mock_writer, \
+             patch("openagent.state_writer.StateWriter") as mock_state_writer, \
              patch("openagent.cli._read_soul", return_value=""), \
              patch("openagent.cli._read_current_md", return_value={"current_md": {}}):
             
