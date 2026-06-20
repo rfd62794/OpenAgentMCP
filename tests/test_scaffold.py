@@ -22,6 +22,18 @@ def test_cli_importable():
     assert cli is not None
 
 
+def test_scanner_importable():
+    """from openagent.scanner import Scanner succeeds."""
+    from openagent.scanner import Scanner
+    assert Scanner is not None
+
+
+def test_assessor_importable():
+    """from openagent.assessor import Assessor succeeds."""
+    from openagent.assessor import Assessor
+    assert Assessor is not None
+
+
 def test_writer_stub_raises():
     """DirectiveWriter().write({}, "", {}) raises NotImplementedError."""
     from openagent.writer import DirectiveWriter
