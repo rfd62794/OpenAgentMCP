@@ -22,22 +22,6 @@ def test_cli_importable():
     assert cli is not None
 
 
-def test_scanner_stub_raises():
-    """Scanner().scan(".") raises NotImplementedError."""
-    from openagent.scanner import Scanner
-    scanner = Scanner()
-    with pytest.raises(NotImplementedError, match="Scanner not yet implemented"):
-        scanner.scan(".")
-
-
-def test_assessor_stub_raises():
-    """Assessor().assess({}) raises NotImplementedError."""
-    from openagent.assessor import Assessor
-    assessor = Assessor()
-    with pytest.raises(NotImplementedError, match="Assessor not yet implemented"):
-        assessor.assess({})
-
-
 def test_writer_stub_raises():
     """DirectiveWriter().write({}, "", {}) raises NotImplementedError."""
     from openagent.writer import DirectiveWriter
