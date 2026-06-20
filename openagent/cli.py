@@ -111,4 +111,7 @@ def _read_current_md(repo: Path) -> dict:
         if ": " in line:
             key, _, val = line.partition(": ")
             fields[key.strip()] = val.strip()
+    # Map certified_floor to test_floor for backward compatibility
+    if "certified_floor" in fields and "test_floor" not in fields:
+        fields["test_floor"] = fields["certified_floor"]
     return {"current_md": fields}
