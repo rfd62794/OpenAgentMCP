@@ -51,6 +51,7 @@ class Assessor:
         phase = current_md.get("phase", "unknown")
         what_is_built = current_md.get("what_is_built", "")
         what_is_next = current_md.get("what_is_next", "")
+        test_floor = current_md.get("test_floor", "unknown")
         open_questions = current_md.get("open_questions", "")
         recent_decisions = current_md.get("recent_decisions", "")
 
@@ -78,6 +79,7 @@ Current state:
 Phase: {phase}
 What is built: {what_is_built}
 What is next: {what_is_next}
+Test floor: {test_floor}
 Open questions: {open_questions}
 Recent decisions: {recent_decisions}
 
