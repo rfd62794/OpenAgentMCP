@@ -4,6 +4,9 @@ from pathlib import Path
 from typing import Optional
 
 import click
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 @click.group()
