@@ -78,22 +78,39 @@ def analyze(path: str, intent: Optional[str], verbose: bool):
 
 
 @cli.command()
-def serve():
+@click.option(
+    "--transport",
+    default="stdio",
+    type=click.Choice(["stdio", "sse"]),
+    help="Transport mode. stdio for Claude Desktop, sse for NSSM service.",
+)
+@click.option(
+    "--port",
+    default=8008,
+    type=int,
+    help="Port for SSE transport (default: 8008). Ignored for stdio.",
+)
+def serve(transport: str, port: int):
     """
-    Start the MCP server for Claude Desktop.
+    Start the MCP server.
 
-    Requires: pip install openagent-directive[mcp]
+    stdio mode (default) — for Claude Desktop:
+        openagent serve
 
-    Add to claude_desktop_config.json:
+    SSE mode — for NSSM persistent service:
+        openagent serve --transport sse --port 8008
+
+    Claude Desktop config (stdio):
         {
           "openagent": {
             "command": "uv",
-            "args": ["run", "--with", "openagent-directive[mcp]", "openagent", "serve"]
+            "args": ["run", "--with", "openagent-directive[mcp]", "openagent", "serve"],
+            "cwd": "C:\\\\Github\\\\OpenAgentMCP"
           }
         }
     """
     from openagent.server import main
-    main()
+    main(transport=transport, port=port)
 
 
 def _read_soul(repo: Path) -> str:

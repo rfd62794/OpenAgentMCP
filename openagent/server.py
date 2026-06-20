@@ -120,8 +120,11 @@ def _read_current_md(repo) -> dict:
     return {"current_md": fields}
 
 
-def main() -> None:
+def main(transport: str = "stdio", port: int = 8008) -> None:
     """Entry point for MCP server. Requires [mcp] extra."""
     _require_mcp()
     mcp = _build_server()
-    mcp.run()
+    if transport == "sse":
+        mcp.run(transport="sse", port=port)
+    else:
+        mcp.run()

@@ -170,3 +170,39 @@ def test_serve_command_fails_without_fastmcp():
         assert "[mcp] extra" in str(result.exception)
     finally:
         openagent.server._MCP_AVAILABLE = original_available
+
+
+def test_main_stdio_calls_mcp_run_no_args():
+    """main(transport="stdio") -> mcp.run() called without transport arg."""
+    mock_mcp_module = MagicMock()
+    mock_server = MagicMock()
+    mock_mcp_module.FastMCP.return_value = mock_server
+    
+    with patch.dict(sys.modules, {"fastmcp": mock_mcp_module}):
+        from openagent.server import main
+        main(transport="stdio")
+        mock_server.run.assert_called_once_with()
+
+
+def test_main_sse_calls_mcp_run_with_transport():
+    """main(transport="sse", port=8008) -> mcp.run(transport="sse", port=8008)."""
+    mock_mcp_module = MagicMock()
+    mock_server = MagicMock()
+    mock_mcp_module.FastMCP.return_value = mock_server
+    
+    with patch.dict(sys.modules, {"fastmcp": mock_mcp_module}):
+        from openagent.server import main
+        main(transport="sse", port=8008)
+        mock_server.run.assert_called_once_with(transport="sse", port=8008)
+
+
+def test_main_unknown_transport_defaults_stdio():
+    """main(transport="http") -> mcp.run() called without transport arg."""
+    mock_mcp_module = MagicMock()
+    mock_server = MagicMock()
+    mock_mcp_module.FastMCP.return_value = mock_server
+    
+    with patch.dict(sys.modules, {"fastmcp": mock_mcp_module}):
+        from openagent.server import main
+        main(transport="http")
+        mock_server.run.assert_called_once_with()

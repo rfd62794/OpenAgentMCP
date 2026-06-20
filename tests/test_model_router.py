@@ -47,7 +47,10 @@ def test_env_var_overrides_capable_model():
 
 
 def test_base_url_is_openrouter():
-    """router.base_url contains "openrouter.ai"."""
+    """router.base_url contains "openrouter.ai" when no env var set."""
+    # Clear env var if set from .env
+    if "OPENAGENT_BASE_URL" in os.environ:
+        del os.environ["OPENAGENT_BASE_URL"]
     router = ModelRouter()
     assert "openrouter.ai" in router.base_url
 

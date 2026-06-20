@@ -177,3 +177,27 @@ def test_analyze_accepts_path_arg():
             
             result = runner.invoke(cli, ["analyze", tmpdir])
             mock_scanner.return_value.scan.assert_called_once()
+
+
+def test_serve_command_default_transport():
+    """openagent serve -> main called with transport="stdio"."""
+    with patch("openagent.server.main") as mock_main:
+        runner = CliRunner()
+        result = runner.invoke(cli, ["serve"])
+        mock_main.assert_called_once_with(transport="stdio", port=8008)
+
+
+def test_serve_command_sse_transport():
+    """openagent serve --transport sse -> main called with transport="sse"."""
+    with patch("openagent.server.main") as mock_main:
+        runner = CliRunner()
+        result = runner.invoke(cli, ["serve", "--transport", "sse"])
+        mock_main.assert_called_once_with(transport="sse", port=8008)
+
+
+def test_serve_command_custom_port():
+    """openagent serve --transport sse --port 9000 -> main called with port=9000."""
+    with patch("openagent.server.main") as mock_main:
+        runner = CliRunner()
+        result = runner.invoke(cli, ["serve", "--transport", "sse", "--port", "9000"])
+        mock_main.assert_called_once_with(transport="sse", port=9000)
