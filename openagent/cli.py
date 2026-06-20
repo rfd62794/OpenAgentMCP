@@ -74,6 +74,25 @@ def analyze(path: str, intent: Optional[str], verbose: bool):
     click.echo("=" * 60)
 
 
+@cli.command()
+def serve():
+    """
+    Start the MCP server for Claude Desktop.
+
+    Requires: pip install openagent-directive[mcp]
+
+    Add to claude_desktop_config.json:
+        {
+          "openagent": {
+            "command": "uv",
+            "args": ["run", "--with", "openagent-directive[mcp]", "openagent", "serve"]
+          }
+        }
+    """
+    from openagent.server import main
+    main()
+
+
 def _read_soul(repo: Path) -> str:
     soul = repo / "SOUL.md"
     return soul.read_text(encoding="utf-8") if soul.exists() else ""
