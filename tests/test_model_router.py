@@ -50,3 +50,13 @@ def test_base_url_is_openrouter():
     """router.base_url contains "openrouter.ai"."""
     router = ModelRouter()
     assert "openrouter.ai" in router.base_url
+
+
+def test_env_var_overrides_base_url():
+    """Set OPENAGENT_BASE_URL -> returned by router.base_url."""
+    os.environ["OPENAGENT_BASE_URL"] = "http://localhost:8005/v1"
+    try:
+        router = ModelRouter()
+        assert router.base_url == "http://localhost:8005/v1"
+    finally:
+        del os.environ["OPENAGENT_BASE_URL"]

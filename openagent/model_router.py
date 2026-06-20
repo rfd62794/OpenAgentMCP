@@ -15,7 +15,7 @@ class ModelRouter:
     """Routes task types to OpenRouter model strings."""
 
     def __init__(self):
-        self.base_url = OPENROUTER_BASE_URL
+        self.base_url = os.getenv("OPENAGENT_BASE_URL", OPENROUTER_BASE_URL)
         self._cheap = os.getenv("OPENAGENT_CHEAP_MODEL", CHEAP_MODEL_DEFAULT)
         self._capable = os.getenv("OPENAGENT_CAPABLE_MODEL", CAPABLE_MODEL_DEFAULT)
 
