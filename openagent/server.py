@@ -137,6 +137,21 @@ def _build_server():
 
         return TestLogReader().read(repo_path, tail)
 
+    @mcp.tool()
+    def list_repos(root_path: str, max_repos: int = 50) -> dict:
+        """
+        Discover all git repos one level under root_path.
+        Returns repos sorted by most-recently-active first.
+        max_repos: cap on results (default 50, max 200).
+
+        Returns:
+          {"repos": [...], "count": int, "root": str}
+        """
+        from openagent.repo_scanner import RepoScanner
+
+        repos = RepoScanner().scan(root_path, max_repos)
+        return {"repos": repos, "count": len(repos), "root": root_path}
+
     return mcp
 
 
