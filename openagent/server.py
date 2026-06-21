@@ -138,10 +138,12 @@ def _build_server():
         return TestLogReader().read(repo_path, tail)
 
     @mcp.tool()
-    def list_repos(root_path: str, max_repos: int = 50) -> dict:
+    def list_repos(root_path: str, max_repos: int = 50,
+                   refresh: bool = False) -> dict:
         """
         Discover all git repos one level under root_path.
-        Returns repos sorted by most-recently-active first.
+        Results are cached for OPENAGENT_CACHE_TTL_SECONDS (default 300s).
+        refresh=True forces a full re-scan regardless of cache state.
         max_repos: cap on results (default 50, max 200).
 
         Returns:
@@ -149,8 +151,23 @@ def _build_server():
         """
         from openagent.repo_scanner import RepoScanner
 
-        repos = RepoScanner().scan(root_path, max_repos)
+        repos = RepoScanner().scan(root_path, max_repos,
+                                   use_cache=True, refresh=refresh)
         return {"repos": repos, "count": len(repos), "root": root_path}
+
+    @mcp.tool()
+    def get_repo(name: str) -> dict:
+        """
+        Return cached context for a single repo by directory name.
+        Does not trigger a scan — reads cache only.
+
+        Returns:
+          {"found": true, "repo": {...}} or {"found": false, "repo": null}
+        """
+        from openagent.repo_cache import RepoCache
+
+        repo = RepoCache().get_one(name)
+        return {"found": repo is not None, "repo": repo}
 
     return mcp
 
