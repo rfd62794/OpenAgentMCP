@@ -1,10 +1,10 @@
 updated: 2026-06-21
 agent: OpenAgentMCP v0.3
-phase: Phase 7 — AsyncTestRunner
-certified_floor: 108/0/0
-test_floor: 108 passing, 0 failing, 0 skipped
-what_is_built: SSE transport, GitContextReader, TestCommandResolver, AsyncTestRunner, TestLogReader, run_tests MCP tool, get_test_log MCP tool, ADR-006
-what_is_next: Phase 8 — Local Repo Collector Integration
+phase: Phase 8 — RepoScanner
+certified_floor: 115/0/0
+test_floor: 115 passing, 0 failing, 0 skipped
+what_is_built: SSE transport, GitContextReader, TestCommandResolver, AsyncTestRunner, TestLogReader, RepoScanner, run_tests MCP tool, get_test_log MCP tool, list_repos MCP tool, ADR-006
+what_is_next: Phase 9 — repos.db Cache + Collectors Integration
 
 open_questions:
 - Which OpenRouter models for cheap/capable stage routing?
