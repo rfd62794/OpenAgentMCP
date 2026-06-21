@@ -13,6 +13,7 @@ import requests
 
 from openagent.models import AssessmentResult, TestFloor
 from openagent.model_router import ModelRouter
+from openagent.git_context import GitContextReader
 
 _REQUIRED_KEYS = [
     "repo_name", "phase_current", "what_is_built", "what_is_stubbed",
@@ -36,7 +37,9 @@ class Assessor:
         scan_result: output of Scanner.scan()
         doc_result:  dict with optional key 'current_md' (parsed current.md fields)
         """
-        prompt = self._build_prompt(scan_result, doc_result)
+        git_ctx = GitContextReader().read(scan_result.get("repo_path", ""))
+        context = {**scan_result, "git": git_ctx}
+        prompt = self._build_prompt(context, doc_result)
         raw = self._call_model(prompt)
         if self.verbose:
             print(f"[assessor] raw model output:\n{raw}\n")
@@ -46,6 +49,7 @@ class Assessor:
         import os as _os
         repo_name = _os.path.basename((scan_result.get("repo_path") or "").rstrip("/\\"))
         file_tree = "\n".join(scan_result.get("file_tree", []))
+        git_ctx = scan_result.get("git")
 
         current_md = doc_result.get("current_md", {})
         phase = current_md.get("phase", "unknown")
@@ -55,7 +59,7 @@ class Assessor:
         open_questions = current_md.get("open_questions", "")
         recent_decisions = current_md.get("recent_decisions", "")
 
-        return f"""You are a senior software architect analyzing a repository.
+        prompt = f"""You are a senior software architect analyzing a repository.
 Output ONLY valid JSON with exactly these keys:
 {{
   "repo_name": "string",
@@ -84,6 +88,20 @@ Open questions: {open_questions}
 Recent decisions: {recent_decisions}
 
 Produce JSON now."""
+
+        if git_ctx is not None:
+            workflows_str = ", ".join(git_ctx["workflows"]) or "none"
+            prompt += f"""
+
+## Git State
+Branch: {git_ctx['active_branch']}
+Last commit: {git_ctx['last_commit_hash']} — {git_ctx['last_commit_message']}
+Date: {git_ctx['last_commit_date']}
+Uncommitted files: {len(git_ctx['uncommitted_files'])} file(s)
+Active workflows: {workflows_str}
+Current phase: {git_ctx['state_phase'] or 'unknown'}"""
+
+        return prompt
 
     def _call_model(self, prompt: str) -> str:
         api_key = os.getenv("OPENROUTER_API_KEY", "")
