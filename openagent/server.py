@@ -99,6 +99,44 @@ def _build_server():
         scan_result = Scanner().scan(str(repo))
         return Assessor().assess(scan_result, doc_result)
 
+    @mcp.tool()
+    def run_tests(repo_path: str, test_cmd: str = "") -> dict:
+        """
+        Spawn the repo's test suite as a background process.
+        If test_cmd is empty, resolves from AGENT_CONTRACT.md or detects
+        from repo contents. Returns within one second.
+
+        Returns:
+          {"status": "started", "pid": int, "log_path": str, "cmd": str}
+          {"status": "error", "reason": str, "pid": None, "cmd": str|None}
+        """
+        from openagent.test_command_resolver import TestCommandResolver
+        from openagent.test_runner import AsyncTestRunner
+
+        cmd = test_cmd.strip() or TestCommandResolver().resolve(repo_path)
+        if not cmd:
+            return {
+                "status": "error",
+                "reason": "No test command found. Add test_cmd: <cmd> to AGENT_CONTRACT.md.",
+                "pid": None,
+                "cmd": None,
+            }
+        return AsyncTestRunner().run(repo_path, cmd)
+
+    @mcp.tool()
+    def get_test_log(repo_path: str, tail: int = 100) -> dict:
+        """
+        Read the async test log and check process status.
+        tail: lines to return from end of log (max 200).
+
+        Returns:
+          {"status": "running"|"complete"|"not_started",
+           "output": str, "exit_code": None}
+        """
+        from openagent.test_log_reader import TestLogReader
+
+        return TestLogReader().read(repo_path, tail)
+
     return mcp
 
 

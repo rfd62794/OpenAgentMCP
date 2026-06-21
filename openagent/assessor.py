@@ -14,6 +14,7 @@ import requests
 from openagent.models import AssessmentResult, TestFloor
 from openagent.model_router import ModelRouter
 from openagent.git_context import GitContextReader
+from openagent.test_command_resolver import TestCommandResolver
 
 _REQUIRED_KEYS = [
     "repo_name", "phase_current", "what_is_built", "what_is_stubbed",
@@ -37,8 +38,10 @@ class Assessor:
         scan_result: output of Scanner.scan()
         doc_result:  dict with optional key 'current_md' (parsed current.md fields)
         """
-        git_ctx = GitContextReader().read(scan_result.get("repo_path", ""))
-        context = {**scan_result, "git": git_ctx}
+        repo_path = scan_result.get("repo_path", "")
+        git_ctx = GitContextReader().read(repo_path)
+        test_cmd = TestCommandResolver().resolve(repo_path)
+        context = {**scan_result, "git": git_ctx, "test_cmd": test_cmd}
         prompt = self._build_prompt(context, doc_result)
         raw = self._call_model(prompt)
         if self.verbose:
@@ -50,6 +53,7 @@ class Assessor:
         repo_name = _os.path.basename((scan_result.get("repo_path") or "").rstrip("/\\"))
         file_tree = "\n".join(scan_result.get("file_tree", []))
         git_ctx = scan_result.get("git")
+        test_cmd = scan_result.get("test_cmd")
 
         current_md = doc_result.get("current_md", {})
         phase = current_md.get("phase", "unknown")
@@ -100,6 +104,12 @@ Date: {git_ctx['last_commit_date']}
 Uncommitted files: {len(git_ctx['uncommitted_files'])} file(s)
 Active workflows: {workflows_str}
 Current phase: {git_ctx['state_phase'] or 'unknown'}"""
+
+        if test_cmd is not None:
+            prompt += f"""
+
+## Test Command
+{test_cmd}"""
 
         return prompt
 
